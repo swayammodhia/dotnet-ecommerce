@@ -1,0 +1,64 @@
+@model ElectronyatShop.ViewModels.PaymentViewModel
+
+@section Links {
+    @*<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />*@
+    <link href="~/css/Payment/style.css" rel="stylesheet" />
+}
+
+<div class="payment-container">
+    <h2>Checkout - Payment</h2>
+
+    <div class="payment-icons">
+        <img src="~/images/payment-icons/Visa_Logo.png" alt="Visa" width="50" />
+        <img src="~/images/payment-icons/Mastercard-logo.png" alt="Mastercard" width="50" />
+        <img src="~/images/payment-icons/PayPal.png" alt="PayPal" width="50" />
+        <img src="~/images/payment-icons/amex.png" alt="Amex" width="50" />
+    </div>
+
+    <form asp-action="Index" method="post" novalidate>
+        <input type="hidden" asp-for="CartId" />
+        <input type="hidden" asp-for="Amount" />
+
+        <label asp-for="CardNumber"></label>
+        <input asp-for="CardNumber" maxlength="16" />
+        <span asp-validation-for="CardNumber" class="text-danger"></span>
+
+        <label for="ExpiryMonth">Expiry Month</label>
+        <select asp-for="ExpiryMonth" id="ExpiryMonth" name="ExpiryMonth" required>
+            <option value="">-- Month --</option>
+            @for (int m = 1; m <= 12; m++)
+            {
+                <option value="@m" selected="@(Model.ExpiryMonth == m ? "selected" : null)">
+                    @System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(m)
+                </option>
+            }
+        </select>
+        <span asp-validation-for="ExpiryMonth" class="text-danger"></span>
+
+        <label for="ExpiryYear">Expiry Year</label>
+        <select asp-for="ExpiryYear" id="ExpiryYear" name="ExpiryYear" required>
+            <option value="">-- Year --</option>
+            @{
+                int startYear = 2025;
+                int endYear = DateTime.Now.Year + 10;
+            }
+            @for (int y = startYear; y <= endYear; y++)
+            {
+                <option value="@y" selected="@(Model.ExpiryYear == y ? "selected" : null)">
+                    @y
+                </option>
+            }
+        </select>
+        <span asp-validation-for="ExpiryYear" class="text-danger"></span>
+
+        <label asp-for="CVC"></label>
+        <input asp-for="CVC" maxlength="4" />
+        <span asp-validation-for="CVC" class="text-danger"></span>
+
+        <button type="submit">Pay </button>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

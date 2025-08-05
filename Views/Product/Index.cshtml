@@ -1,0 +1,134 @@
+﻿@model List<ElectronyatShop.Models.Product>
+@{
+    ViewData["Title"] = "Home";
+}
+
+@section Links {
+    <link rel="stylesheet" href="~/css/Product/styles.css" />
+    <link rel="stylesheet" href="~/css/Product/custom-styles.css" />
+    <link rel="icon" type="image/x-icon" href="~/assets/favicon.ico" />
+}
+
+<div class="product-page-container">
+
+    <!-- Promo banner -->
+    <div class="promo-banner">
+        <h2> Summer Sale: Up to 30% off on select brands! </h2>
+        <p>Use code <strong>SUMMER30</strong> at checkout.</p>
+    </div>
+
+    <div class="content-wrapper">
+        <!-- Filter sidebar -->
+        <aside class="filter-sidebar">
+            <h3>What are you looking for?</h3>
+
+            <!-- Search box -->
+            <input type="text" id="searchBox" placeholder="Search products..." onkeyup="filterProducts()" />
+
+            <!-- Brand filter -->
+            <form id="brandFilterForm" method="get" action="/Product/Index">
+            <label for="brandSelect">Brand</label>
+            <label for="brandSelect">Brand</label>
+            <select id="brandSelect" class="form-control">
+                <option value="">All Brands</option>
+                <option value="Apple">Apple</option>
+                <option value="ASUS">ASUS</option>
+                <option value="Logitech">Logitech</option>
+                <option value="ROG">ROG</option>
+                <option value="Samsung">Samsung</option>
+                <option value="Sony">Sony</option>
+            </select>
+
+            <script>
+                document.getElementById("brandSelect").addEventListener("change", function () {
+                    const selectedBrand = this.value;
+                    const url = selectedBrand ? `?brand=${encodeURIComponent(selectedBrand)}` : "";
+                    window.location.href = "/Product/Index" + url;
+                });
+            </script>
+            </form>
+
+            <!-- Budget filter -->
+            <label for="budgetSelect">Price Range</label>
+            <select id="budgetSelect" onchange="filterProducts()">
+                <option value="">Any</option>
+                <option value="200-499">$200 - $499</option>
+                <option value="500-799">$500 - $799</option>
+                <option value="800-1099">$800 - $1099</option>
+                <option value="1100-1399">$1100 - $1399</option>
+                <option value="1400+">$1400+</option>
+            </select>
+        </aside>
+
+        <!-- Products grid -->
+        <section class="product-grid" id="productGrid">
+            @foreach (var product in Model)
+            {
+                <div class="product-card" data-brand="@product.Brand" data-price="@product.ActualPrice">
+                    <img src="~/Images/@product.Image" alt="@product.Name" class="product-image" />
+                    <div class="product-details">
+                        <h5 class="product-title">@product.Name</h5>
+
+                        @if (product.DiscountPercentage > 0)
+                        {
+                            <div class="price-row">
+                                <span class="original-price">$@product.Price.ToString("F2")</span>
+                                <span class="discount-badge">@product.DiscountPercentage% OFF</span>
+                            </div>
+                            <p class="discounted-price">$@product.ActualPrice.ToString("F2")</p>
+                        }
+                        else
+                        {
+                            <p class="discounted-price">$@product.Price.ToString("F2")</p>
+                        }
+
+                        <a class="btn btn-primary btn-block" href="~/Product/Details/@product.Id">View Details</a>
+                    </div>
+                </div>
+            }
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const brandFilter = document.getElementById('brandSelect').value;
+            const budgetFilter = document.getElementById('budgetSelect').value;
+
+            const productGrid = document.getElementById('productGrid');
+            const cards = productGrid.getElementsByClassName('product-card');
+
+            for (let card of cards) {
+                const brand = card.getAttribute('data-brand');
+                const price = parseFloat(card.getAttribute('data-price'));
+
+                // Check search term
+                const title = card.querySelector('.product-title').textContent.toLowerCase();
+                const matchesSearch = title.includes(searchTerm);
+
+                // Check brand
+                const matchesBrand = brandFilter === '' || brand === brandFilter;
+
+                // Check budget
+                let matchesBudget = true;
+                if (budgetFilter) {
+                    if (budgetFilter === '500+') {
+                        matchesBudget = price > 500;
+                    } else {
+                        const [min, max] = budgetFilter.split('-').map(Number);
+                        matchesBudget = price >= min && price <= max;
+                    }
+                }
+
+                // Show or hide card based on all filters
+                if (matchesSearch && matchesBrand && matchesBudget) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            }
+        }
+    </script>
+}

@@ -1,0 +1,158 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService Authorize
+@{
+    var authorizationResult = await Authorize.AuthorizeAsync(User, "AdminRole");
+    var utcNowYear = DateTime.UtcNow.Year;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Vortech Shop</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/ionicons.min.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    @await RenderSectionAsync("Links", required: false)
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-0">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-area="" asp-controller="@(authorizationResult.Succeeded ? "Admin" : "Product")" asp-action="Index"><img src="" alt=""></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="@(authorizationResult.Succeeded ? "Admin" : "Product")" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
+                    </li>
+                </ul>
+                <partial name="_LoginPartial" />
+            </div>
+        </div>
+    </nav>
+    @*<header class="header py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">Welcome to Vortech Shop!</h1>
+                <p class="lead fw-normal text-white-50 mb-0">Here you can find any laptops, keyboards, mouses, etc.</p>
+            </div>
+        </div>
+    </header>*@
+<div style="position: relative; overflow: hidden; width: 100%; height: 400px;">
+    <div id="slider" style="white-space: nowrap; transition: transform 1s ease-in-out; height: 100%;">
+
+        <!-- Slide 1 -->
+        <div style="display: inline-block; width: 100%; height: 100%; position: relative;">
+            <img src="https://i.pinimg.com/1200x/6b/1a/d0/6b1ad0e9ed79598c4543115681156987.jpg" alt="Laptop"
+                 style="width: 100%; height: 100%; object-fit: cover; object-position: center;" />
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                        background-color: rgba(0,0,0,0.5); color: white;
+                        display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <h1 style="font-size: 3rem;">Welcome to Vortech!</h1>
+                <p style="font-size: 1.2rem;">Find the best laptops here</p>
+            </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div style="display: inline-block; width: 100%; height: 100%; position: relative;">
+            <img src="https://i.pinimg.com/736x/7d/39/39/7d3939a449d49568723455058462e0c3.jpg" alt="Keyboard"
+                 style="width: 100%; height: 100%; object-fit: cover; object-position: center;" />
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                        background-color: rgba(0,0,0,0.5); color: white;
+                        display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <h1 style="font-size: 3rem;">High-Quality Keyboards</h1>
+                <p style="font-size: 1.2rem;">Work and gaming gear</p>
+            </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div style="display: inline-block; width: 100%; height: 100%; position: relative;">
+            <img src="https://i.pinimg.com/1200x/63/f7/4d/63f74d262cc1f97b81098679f9dd2a6c.jpg" alt="Mouse"
+                 style="width: 100%; height: 100%; object-fit: cover; object-position: center;" />
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                        background-color: rgba(0,0,0,0.5); color: white;
+                        display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <h1 style="font-size: 3rem;">Precision Mice</h1>
+                <p style="font-size: 1.2rem;">Smooth performance for work & play</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    let index = 0;
+    setInterval(() => {
+        index = (index + 1) % 3;
+        document.getElementById('slider').style.transform = `translateX(-${index * 100}%)`;
+    }, 5000); // change slide every 5 seconds
+</script>
+
+    <div class="container-fluid">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    <footer class="footer-07 text-white">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-md-12 text-center">
+                    <h2 class="footer-heading">
+                        <a asp-controller="@(authorizationResult.Succeeded ? "Admin" : "Product")" asp-action="Index" class="logo">
+                            VortechShop.com
+                        </a>
+                    </h2>
+                    <ul class="ftco-footer-social p-0">
+                        <li class="ftco-animate">
+                            <a href="" data-toggle="tooltip" data-placement="top"
+                               title="LinkedIn"><span class="ion-logo-linkedin"></span></a>
+                        </li>
+                        <li class="ftco-animate">
+                            <a href="" data-toggle="tooltip" data-placement="top"
+                               title="Instagram"><span class="ion-logo-instagram"></span></a>
+                        </li>
+                        <li class="ftco-animate">
+                            <a href="" data-toggle="tooltip" data-placement="top"
+                               title="Facebook"><span class="ion-logo-facebook"></span></a>
+                        </li>
+                        <li class="ftco-animate">
+                            <a href="" data-toggle="tooltip" data-placement="top"
+                               title="Twitter"><span class="ion-logo-twitter"></span></a>
+                        </li>
+                        <li class="ftco-animate">
+                            <a href="" data-toggle="tooltip" data-placement="top"
+                               title="Reddit"><span class="ion-logo-reddit"></span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12 text-center">
+                    <p class="copyright">
+                        Copyright &copy; <span id="currentYear"></span> All rights reserved by <a href="" target="_blank">Jiril Zala & Swayam Modhia</a>.
+                    </p>
+                </div>
+            </div>
+    </div>
+    </footer>
+    <script>
+        document.getElementById('currentYear').innerHTML = new Date().getFullYear().toString();
+    </script>
+    <script src="~/js/popper.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

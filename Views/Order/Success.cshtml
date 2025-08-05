@@ -1,0 +1,9 @@
+@{
+    ViewData["Title"] = "Order Success";
+}
+
+<div class="container mt-5 text-center">
+    <h2 class="text-success">✅ Order Confirmed!</h2>
+    <p>Your order with <strong>Cart ID: @ViewBag.CartId</strong> has been placed successfully.</p>
+    <a href="~/Product/Index" class="btn btn-primary mt-4">Continue Shopping</a>
+</div>
